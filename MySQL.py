@@ -10,14 +10,14 @@ class MySQL:
         self.database = "RaspberryData"
 
     def Conexion(self):
-        try
+        try:
             self.mydb = MySQLConnection(
                 host=self.host,
                 user=self.user,
                 password=self.password,
                 database=self.database
             )
-        except Exception as e
+        except Exception as e:
             self.mydb = MySQLConnection(
                 host="localhost",
                 user="root",
