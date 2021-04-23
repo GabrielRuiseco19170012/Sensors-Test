@@ -1,4 +1,4 @@
-from mysql.connector.connection import MySQLConnection
+import pymysql
 from datetime import datetime
 
 
@@ -6,23 +6,23 @@ class MySQL:
     def __init__(self):
         self.host = "localhost"
         self.user = "root"
-        self.password = "123456"
-        self.database = "RaspberryData"
+        self.password = "password"
+        self.database = "adonis"
 
     def Conexion(self):
         try:
-            self.mydb = MySQLConnection(
+            self.mydb = pymysql.connect(
                 host=self.host,
                 user=self.user,
                 password=self.password,
                 database=self.database
             )
         except Exception as e:
-            self.mydb = MySQLConnection(
+            self.mydb = pymysql.connect(
                 host="localhost",
                 user="root",
-                password="123456",
-                database="RaspberryData"
+                password="password",
+                database="adonis"
             )
         return "Conexion a MySQL exitosa"
 
