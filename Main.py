@@ -96,8 +96,8 @@ def send_data():
     while True:
         try:
             sensor = sensors.getOneInstance('DHT-11')
-            ws.send('{"t":7,"d":{"topic":"iot","event":"measure","data":[{"temperature":' + str(
-                sensor.temperature) + '}, {"humidity":' + str(sensor.humidity) + '}]}}')
+            ws.send('{"t":7,"d":{"topic":"measures","event":"measure","data":{"temperature":' + str(
+                sensor.temperature) + ', "humidity":' + str(sensor.humidity) + '}}}')
         except RuntimeError:
             pass
 

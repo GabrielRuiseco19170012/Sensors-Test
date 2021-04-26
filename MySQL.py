@@ -4,10 +4,10 @@ from datetime import datetime
 
 class MySQL:
     def __init__(self):
-        self.host = "localhost"
-        self.user = "user"
-        self.password = ""
-        self.database = "adonis"
+        self.host = "us-cdbr-east-03.cleardb.com"
+        self.user = "b12f752de2a06b"
+        self.password = "cb29f57b"
+        self.database = "heroku_29f382185e3d44a"
 
     def Conexion(self):
         try:
