@@ -23,8 +23,6 @@ class HCR:
         self.TimeElapsed = 0
         self.distance = 0
         self.type = 'HCR'
-        newSQL.Conexion()
-        newMongo.mongoConexion()
 
     def readData(self):
         GPIO.output(self.GPIO_TRIGGER, True)

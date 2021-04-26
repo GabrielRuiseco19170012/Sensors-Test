@@ -1,6 +1,6 @@
 from DHT import *
-from HCR import *
-from PIR import *
+from HL69 import *
+from ML85 import *
 from DataList import DataList
 from File import File
 from MySQL import *
@@ -28,15 +28,15 @@ class Sensors:
 
     def createInstances(self):
         for o in sensorList:
-            if self.instancesList.getData(None, o['name']) is None:
-                if o['name'][0:3] == 'dht':
-                    instance = DHT(o['name'], o['pin'][0])
+            if self.instancesList.getData(None, o['type']) is None:
+                if o['name'][0:3] == 'DHT-11':
+                    instance = DHT(o['name'])
                     self.instancesList.addData(instance)
-                elif o['name'][0:3] == 'hcr':
-                    instance = HCR(o['name'], o['pin'][0], o['pin'][1])
+                elif o['name'][0:3] == 'HL69':
+                    instance = HL69(o['name'])
                     self.instancesList.addData(instance)
-                elif o['name'][0:3] == 'pir':
-                    instance = PIR(o['name'], o['pin'][0])
+                elif o['name'][0:3] == 'ML85':
+                    instance = ML85(o['name'])
                     self.instancesList.addData(instance)
                 else:
                     print('error al generar instancia')

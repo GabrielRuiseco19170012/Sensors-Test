@@ -17,10 +17,10 @@ newMongo.mongoConexion()
 
 
 
-# sensors = Sensors()
-# sensorList = sensors.getAllInstance()
-# print(sensorList)
-# sensorList.returnData()
+sensors = Sensors()
+sensorList = sensors.getAllInstance()
+print(sensorList)
+sensorList.returnData()
 
 
 def on_message(ws, message):
@@ -59,30 +59,14 @@ def on_open(ws):
 
     Thread(target=run).start()
 
-if __name__ == '__main__':
-    ser = serial.Serial('/dev/ttyACM0', 115200, timeout=1)
-    ser.flush()
 
-    while True:
-        if ser.in_waiting > 0:
-            line = ser.readline().decode('utf-8').rstrip()
-            try:
-                jLine = json.loads(line)
-                if jLine["uvIntensity"]:
-                    print(jLine["uvIntensity"])
-                    print(jLine["grHumidity"])
-                if jLine["grHumidity"]:
-                    print(jLine["grHumidity"])
-            except:
-                print("An exception occurred")
-            
-# if __name__ == "__main__":
-#     websocket.enableTrace(True)
-#     uri = "ws://chat-api-for-python-v0.herokuapp.com/adonis-ws"
-#     ws = websocket.WebSocketApp(uri,
-#                                 on_open=on_open,
-#                                 on_message=on_message,
-#                                 on_error=on_error,
-#                                 on_close=on_close,
-#                                 )
-#     ws.run_forever()
+if __name__ == "__main__":
+    websocket.enableTrace(True)
+    uri = "ws://chat-api-for-python-v0.herokuapp.com/adonis-ws"
+    ws = websocket.WebSocketApp(uri,
+                                on_open=on_open,
+                                on_message=on_message,
+                                on_error=on_error,
+                                on_close=on_close,
+                                )
+    ws.run_forever()

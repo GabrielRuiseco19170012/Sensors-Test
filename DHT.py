@@ -9,14 +9,14 @@ newMongo = MongoDB()
 
 
 class DHT:
-    def __init__(self, name, DHTPIN):
+    def __init__(self, name):
         self.idName = name
         self.sensor = Adafruit_DHT.DHT11
-        self.DHT11_pin = DHTPIN
+        self.DHT11_pin = 4
         self.datos = (0, 0, "")
         self.temperature = 0
         self.humidity = 0
-        self.type = 'DHT'
+        self.type = 'DHT-11'
         newSQL.Conexion()
         newMongo.mongoConexion()
 
@@ -29,5 +29,6 @@ class DHT:
             time.sleep(1)
 
     def returnData(self):
-        data = {'name': self.idName, 'data': [self.temperature, self.humidity], 'type': self.type}
+        data = {'name': self.idName, 'data': [{"temperatude": self.temperature}, {"humidity": self.humidity}],
+                'type': self.type}
         return data
