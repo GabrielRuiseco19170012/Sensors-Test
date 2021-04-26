@@ -46,14 +46,14 @@ class Sensors:
 
     def getAllInstance(self):
         return self.instancesList.getDataList()
-    
+
     def returnData(self):
         try:
             while True:
                 for element in sensorList:
                     element.read()
                     data = element.retunData()
-                    if (data['data']==[None, None]):
+                    if (data['data'] == [None, None]):
                         newSQL.guardarDatos(data)
                         newMongo.insertDatosSensor(data)
                         file.append(data)
@@ -63,3 +63,7 @@ class Sensors:
         except KeyboardInterrupt:
             print("adios")
             sys.exit()
+
+    def readThread(self):
+        t = threading.Thread(name='Hilo', target=self.returnData)
+        t.start()

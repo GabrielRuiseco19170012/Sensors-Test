@@ -1,7 +1,7 @@
 import json
 import time
 import websocket
-from threading import Thread
+import threading
 from DHT import DHT
 from Sensors import Sensors
 from File import File
@@ -15,12 +15,10 @@ newMongo = MongoDB()
 newSQL.Conexion()
 newMongo.mongoConexion()
 
-
-
 sensors = Sensors()
 sensorList = sensors.getAllInstance()
 print(sensorList)
-sensorList.returnData()
+# sensorList.returnData()
 
 
 def on_message(ws, message):
@@ -57,10 +55,28 @@ def on_open(ws):
             ws.send(json.dumps(data))
             time.sleep(3)
 
-    Thread(target=run).start()
+    threading.Thread(target=run).start()
 
+
+if __name__ == '__main__':
+    ser = serial.Serial('/dev/ttyACM0', 115200, timeout=1)
+    ser.flush()
+
+    while True:
+        if ser.in_waiting > 0:
+            line = ser.readline().decode('utf-8').rstrip()
+            try:
+                jLine = json.loads(line)
+                if jLine["uvIntensity"]:
+                    print(jLine["uvIntensity"])
+                    print(jLine["grHumidity"])
+                if jLine["grHumidity"]:
+                    print(jLine["grHumidity"])
+            except:
+                print("An exception occurred")
 
 if __name__ == "__main__":
+    sensors.readThread()
     websocket.enableTrace(True)
     uri = "ws://chat-api-for-python-v0.herokuapp.com/adonis-ws"
     ws = websocket.WebSocketApp(uri,
