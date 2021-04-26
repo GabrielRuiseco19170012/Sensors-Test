@@ -3,6 +3,8 @@ import serial
 import json
 import threading
 
+GPIO.setmode(GPIO.BCM)
+
 threads = []
 
 
@@ -13,6 +15,8 @@ class HL69:
         self.ser = serial.Serial('/dev/ttyACM0', 115200, timeout=1)
         self.ser.flush()
         self.type = "HL-69"
+        self.pinOut = 18
+        GPIO.setup(self.pinOut, GPIO.OUT)
 
     def readData(self):
         while True:
@@ -22,6 +26,10 @@ class HL69:
                     jLine = json.loads(line)
                     if jLine["grHumidity"]:
                         self.humidity = jLine["grHumidity"]
+                        if self.humidity < 10:
+                            GPIO.output(self.pinOut, GPIO.HIGH)
+                        if self.humidity > 95:
+                            GPIO.output(self.pinOut, GPIO.LOW)
                 except:
                     print("An exception occurred")
 
