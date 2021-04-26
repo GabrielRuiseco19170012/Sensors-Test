@@ -66,8 +66,16 @@ if __name__ == '__main__':
     while True:
         if ser.in_waiting > 0:
             line = ser.readline().decode('utf-8').rstrip()
-            print(line)
-
+            try:
+                jLine = json.loads(line)
+                if jLine["uvIntensity"]:
+                    print(jLine["uvIntensity"])
+                    print(jLine["grHumidity"])
+                if jLine["grHumidity"]:
+                    print(jLine["grHumidity"])
+            except:
+                print("An exception occurred")
+            
 # if __name__ == "__main__":
 #     websocket.enableTrace(True)
 #     uri = "ws://chat-api-for-python-v0.herokuapp.com/adonis-ws"
