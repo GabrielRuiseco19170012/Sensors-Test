@@ -7,11 +7,14 @@ threads = []
 
 
 class ML85:
-    def __init__(self, name):
+    def __init__(self, id, name):
+        self.id = id
         self.idName = name
         self.uvIntensity = 0
         self.ser = serial.Serial('/dev/ttyACM0', 115200, timeout=1)
         self.ser.flush()
+        self.pinOut = 17
+        GPIO.setup(self.pinOut, GPIO.OUT)
         self.type = "ML85"
 
     def readData(self):

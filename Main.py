@@ -2,6 +2,9 @@ import json
 import time
 import websocket
 import threading
+import RPi.GPIO as GPIO
+
+GPIO.setmode(GPIO.BCM)
 from DHT import DHT
 from Sensors import Sensors
 from File import File
@@ -14,10 +17,13 @@ newSQL = MySQL()
 newMongo = MongoDB()
 newSQL.Conexion()
 newMongo.mongoConexion()
-
+pinRegar = 18
+pinLuz = 17
 sensors = Sensors()
 sensorList = sensors.getAllInstance()
-print(sensorList)
+
+
+# print(sensorList)
 # sensorList.returnData()
 
 
@@ -28,7 +34,17 @@ def on_message(ws, message):
     value = response['d']
     if 'data' in value:
         result = value['data']
-        print(result)
+        if result['plantID'] == sensors.id:
+            if result['order'] == "regar":
+                GPIO.setup(pinRegar, GPIO.OUT)
+                GPIO.output(pinRegar, GPIO.HIGH)
+                time.sleep(5)
+            if result['order'] == "iluminar":
+                GPIO.setup(pinLuz, GPIO.OUT)
+                if GPIO.input(pinLuz) == 0:
+                    GPIO.output(pinLuz, GPIO.HIGH)
+                elif GPIO.input(pinLuz) == 1:
+                    GPIO.output(pinLuz, GPIO.LOW)
 
 
 def on_error(ws, error):
@@ -74,6 +90,17 @@ if __name__ == '__main__':
                     print(jLine["grHumidity"])
             except:
                 print("An exception occurred")
+
+
+def send_data():
+    while True:
+        try:
+            sensor = sensors.getOneInstance('DHT-11')
+            ws.send('{"t":7,"d":{"topic":"iot","event":"measure","data":[{"temperature":' + str(
+                sensor.temperature) + '}, {"humidity":' + str(sensor.humidity) + '}]}}')
+        except RuntimeError:
+            pass
+
 
 if __name__ == "__main__":
     sensors.readThread()

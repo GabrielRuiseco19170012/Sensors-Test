@@ -42,3 +42,13 @@ class MySQL:
             return data
         except Exception as e:
             raise e
+
+    def getFlowerpot(self, data):
+        self.sql1 = "select * from flowerpot where id = (select IDFlowerpot from flowerpot_sensors where IDSensor = %s)"
+        try:
+            self.mycursor = self.mydb.cursor()
+            self.mycursor.execute(self.sql1, data)
+            res = self.mycursor.fetchone()
+            return res
+        except Exception as e:
+            raise e

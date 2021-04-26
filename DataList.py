@@ -14,13 +14,13 @@ class DataList(object):
     def addData(self, data):
         self.myData.append(data)
 
-    def getData(self, index=None, name=None):
+    def getData(self, index=None, type=None):
         if index is not None:
             return self.myData[index]
-        elif name is not None:
+        elif type is not None:
             i = 0
             for x in self.myData:
-                if (getattr(x,'idName')) == name:
+                if (getattr(x, 'type')) == type:
                     return x
                 i += 1
         else:

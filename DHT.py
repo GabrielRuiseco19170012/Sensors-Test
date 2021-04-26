@@ -11,7 +11,8 @@ newMongo = MongoDB()
 
 
 class DHT:
-    def __init__(self, name):
+    def __init__(self, id, name):
+        self.id = id
         self.idName = name
         self.sensor = Adafruit_DHT.DHT11
         self.DHT11_pin = 4
@@ -19,7 +20,6 @@ class DHT:
         self.temperature = 0
         self.humidity = 0
         self.type = 'DHT-11'
-        self.pinOut = 17
         GPIO.setup(self.pinOut, GPIO.OUT)
 
     def read(self):
@@ -28,13 +28,10 @@ class DHT:
             self.ahora = datetime.now()
             self.fecha = self.ahora.strftime("%Y-%m-%d %H:%M:%S")
             self.datos = (self.temperature, self.humidity, self.fecha)
-            if self.temperature > 25:
-                GPIO.output(self.pinOut, GPIO.HIGH)
-            if self.temperature > 24:
-                GPIO.output(self.pinOut, GPIO.LOW)
             time.sleep(1)
 
     def returnData(self):
         data = {'name': self.idName, 'data': [{"temperatude": self.temperature}, {"humidity": self.humidity}],
                 'type': self.type}
         return data
+

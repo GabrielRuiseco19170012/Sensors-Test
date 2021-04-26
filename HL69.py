@@ -9,7 +9,8 @@ threads = []
 
 
 class HL69:
-    def __init__(self, name):
+    def __init__(self, id, name):
+        self.id = id
         self.idName = name
         self.humidity = 0
         self.ser = serial.Serial('/dev/ttyACM0', 115200, timeout=1)

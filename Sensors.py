@@ -23,20 +23,21 @@ sensorList = newSQL.getSensors()
 class Sensors:
 
     def __init__(self):
+        self.id = 1
         self.instancesList = DataList()
         self.createInstances()
 
     def createInstances(self):
         for o in sensorList:
             if self.instancesList.getData(None, o['type']) is None:
-                if o['name'][0:3] == 'DHT-11':
-                    instance = DHT(o['name'])
+                if o['type'] == 'DHT-11':
+                    instance = DHT(o['id'], o['name'])
                     self.instancesList.addData(instance)
-                elif o['name'][0:3] == 'HL69':
-                    instance = HL69(o['name'])
+                elif o['type'] == 'HL69':
+                    instance = HL69(o['id'], o['name'])
                     self.instancesList.addData(instance)
-                elif o['name'][0:3] == 'ML85':
-                    instance = ML85(o['name'])
+                elif o['type'] == 'ML85':
+                    instance = ML85(o['id'], o['name'])
                     self.instancesList.addData(instance)
                 else:
                     print('error al generar instancia')
