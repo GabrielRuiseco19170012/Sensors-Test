@@ -27,6 +27,7 @@ class HL69:
                     jLine = json.loads(line)
                     if jLine["grHumidity"]:
                         self.humidity = jLine["grHumidity"]
+                        print(self.humidity)
                         if self.humidity < 10:
                             GPIO.output(self.pinOut, GPIO.HIGH)
                         if self.humidity > 95:

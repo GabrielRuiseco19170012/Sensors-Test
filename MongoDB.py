@@ -6,7 +6,7 @@ class MongoDB:
         pass
 
     def mongoConexion(self):
-        self.Mongo_URI = "mongodb+srv://user:user@cluster0.0fjcd.mongodb.net/test"
+        self.Mongo_URI = "mongodb+srv://Judecx14:14777@cluster0.8aiwz.mongodb.net/adonis?retryWrites=true&w=majority"
         # self.Mongo_URI="mongodb://"+self.Mongo_Host+":"+self.Mongo_Port+"/"
         try:
             # self.cliente = pymongo.MongoClient(self.Mongo_URI)
@@ -19,8 +19,8 @@ class MongoDB:
 
     def insertDatosSensor(self, data):
         try:
-            self.mydb = self.cliente['RaspberryData']
-            self.tabla = self.mydb['Sensors']
+            self.mydb = self.cliente['adonis']
+            self.tabla = self.mydb['measurements']
             self.datosIns = self.tabla.insert_one(data)
             return "Datos del Sensor insertados a MongoDB"
         except:

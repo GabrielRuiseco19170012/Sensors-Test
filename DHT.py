@@ -20,7 +20,6 @@ class DHT:
         self.temperature = 0
         self.humidity = 0
         self.type = 'DHT-11'
-        GPIO.setup(self.pinOut, GPIO.OUT)
 
     def read(self):
         self.humidity, self.temperature = Adafruit_DHT.read(self.sensor, self.DHT11_pin)
@@ -28,10 +27,11 @@ class DHT:
             self.ahora = datetime.now()
             self.fecha = self.ahora.strftime("%Y-%m-%d %H:%M:%S")
             self.datos = (self.temperature, self.humidity, self.fecha)
+            print(self.datos)
             time.sleep(1)
 
     def returnData(self):
-        data = {'name': self.idName, 'data': [{"temperatude": self.temperature}, {"humidity": self.humidity}],
+        data = {'name': self.idName, 'data': {"temperatude": self.temperature, "humidity": self.humidity},
                 'type': self.type}
         return data
 

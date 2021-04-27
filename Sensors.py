@@ -7,6 +7,8 @@ from MySQL import *
 from MongoDB import *
 import sys
 
+threads = []
+
 try:
     file = File.readData()
 except Exception as e:
@@ -28,16 +30,16 @@ class Sensors:
         self.createInstances()
 
     def createInstances(self):
+        print(sensorList)
         for o in sensorList:
-            if self.instancesList.getData(None, o['type']) is None:
-                if o['type'] == 'DHT-11':
-                    instance = DHT(o['id'], o['name'])
+                if o[3] == 'DHT-11':
+                    instance = DHT(o[0], o[1])
                     self.instancesList.addData(instance)
-                elif o['type'] == 'HL69':
-                    instance = HL69(o['id'], o['name'])
+                elif o[3] == 'HL-69':
+                    instance = HL69(o[0], o[1])
                     self.instancesList.addData(instance)
-                elif o['type'] == 'ML85':
-                    instance = ML85(o['id'], o['name'])
+                elif o[3] == 'ML85':
+                    instance = ML85(o[0], o[1])
                     self.instancesList.addData(instance)
                 else:
                     print('error al generar instancia')
@@ -51,16 +53,14 @@ class Sensors:
     def returnData(self):
         try:
             while True:
-                for element in sensorList:
+                for element in self.instancesList.getDataList():
                     element.read()
-                    data = element.retunData()
-                    if (data['data'] == [None, None]):
-                        newSQL.guardarDatos(data)
+                    data = element.returnData()
+                    if (data['data'] != {'temperatude': None, 'humidity': None} and data['data'] != [{'grHumidity': 0}] and data['data'] != [{'uvIntensity': 0}]):
                         newMongo.insertDatosSensor(data)
-                        file.append(data)
-                        File.saveData(file)
                     else:
-                        print('Error')
+                        #print('Error')
+                        return
         except KeyboardInterrupt:
             print("adios")
             sys.exit()

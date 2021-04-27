@@ -25,6 +25,7 @@ class ML85:
                     jLine = json.loads(line)
                     if jLine["uvIntensity"]:
                         self.uvIntensity = jLine["uvIntensity"]
+                        print(self.uvIntensity)
                 except:
                     print("An exception occurred")
 
