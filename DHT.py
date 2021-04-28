@@ -27,11 +27,10 @@ class DHT:
             self.ahora = datetime.now()
             self.fecha = self.ahora.strftime("%Y-%m-%d %H:%M:%S")
             self.datos = (self.temperature, self.humidity, self.fecha)
-            print(self.datos)
             time.sleep(1)
 
     def returnData(self):
-        data = {'name': self.idName, 'data': {"temperatude": self.temperature, "humidity": self.humidity},
+        data = {'name': self.idName, 'data': {"temperature": self.temperature, "humidity": self.humidity},
                 'type': self.type}
         return data
 

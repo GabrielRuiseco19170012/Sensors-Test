@@ -43,8 +43,18 @@ class MySQL:
         except Exception as e:
             raise e
 
+    def getUserID(self, data):
+        self.sql1 = "select user_id from gardens where id = (select garden from flowerpots where id = (select IDFlowerpot from flowerpot_sensors where IDSensor = %s))"
+        try:
+            self.mycursor = self.mydb.cursor()
+            self.mycursor.execute(self.sql1, data)
+            res = self.mycursor.fetchone()
+            return res
+        except Exception as e:
+            raise e
+
     def getFlowerpot(self, data):
-        self.sql1 = "select * from flowerpot where id = (select IDFlowerpot from flowerpot_sensors where IDSensor = %s)"
+        self.sql1 = "select IDFlowerpot from flowerpot_sensors where IDSensor = %s"
         try:
             self.mycursor = self.mydb.cursor()
             self.mycursor.execute(self.sql1, data)

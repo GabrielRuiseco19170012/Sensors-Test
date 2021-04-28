@@ -6,7 +6,7 @@ class MongoDB:
         pass
 
     def mongoConexion(self):
-        self.Mongo_URI = "mongodb+srv://Judecx14:14777@cluster0.8aiwz.mongodb.net/adonis?retryWrites=true&w=majority"
+        self.Mongo_URI = "mongodb+srv://14777:14777@cluster0.pltuv.mongodb.net/adonis?retryWrites=true&w=majority"
         # self.Mongo_URI="mongodb://"+self.Mongo_Host+":"+self.Mongo_Port+"/"
         try:
             # self.cliente = pymongo.MongoClient(self.Mongo_URI)
