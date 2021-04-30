@@ -3,6 +3,8 @@ import serial
 import json
 import threading
 GPIO.setmode(GPIO.BCM)
+from datetime import datetime
+
 
 threads = []
 
@@ -16,17 +18,21 @@ class HL69:
         self.pinOut = 18
         GPIO.setup(self.pinOut, GPIO.OUT)
 
-    def read(self, jline):
+    def read(self, jLine):
         try:
+#             print(jLine)
             if jLine["grHumidity"]:
+#                 print(jLine["grHumidity"])
                 self.humidity = jLine["grHumidity"]
-                if self.humidity < 10:
-                    GPIO.output(self.pinOut, GPIO.HIGH)
-                if self.humidity > 95:
-                    GPIO.output(self.pinOut, GPIO.LOW)
-        except:
-            print("Error")
+                print(self.humidity,"sisoyyo")
+                now = datetime.now()
+                data = {"IDSensor":self.id, "measurements": {"grHumidity": self.humidity}, "created_at": now}
+                return data
+        except Exception as e:
+            print(e)
 
     def returnData(self):
-        data = {'name': self.idName, 'data': [{"grHumidity": self.humidity}], 'type': self.type}
+        now = datetime.now()
+#         timestamp = now.strftime("%Y-%m-%d %H:%M:%S")
+        data = {"IDSensor":self.id, "measurements": {"grHumidity": self.humidity}, "created_at": now}
         return data

@@ -6,7 +6,10 @@ from File import File
 from MySQL import *
 from MongoDB import *
 from UData import USERID
+import threading
 import sys
+import serial
+import json
 
 threads = []
 
@@ -19,7 +22,6 @@ newSQL = MySQL()
 newMongo = MongoDB()
 newSQL.Conexion()
 newMongo.mongoConexion()
-
 sensorList = newSQL.getSensors()
 
 
@@ -55,14 +57,28 @@ class Sensors:
         return self.instancesList.getDataList()
 
     def returnData(self):
+        jLine={}
+        ser = serial.Serial('/dev/ttyACM0', 115200, timeout=1)
+        ser.flush()
         try:
             while True:
                 for element in self.instancesList.getDataList():
                     if element.type == "DHT-11":
-                        element.read()    
-                    data = element.returnData()
-                    if (data['data'] != {'temperature': None, 'humidity': None} and data['data'] != [{'grHumidity': None}] and data['data'] != [{'uvIntensity': None}]):
-                        newMongo.insertDatosSensor(data)
+                        element.read()
+                        data = element.returnData()
+                    try:
+                        if element.type == "HL-69" or element.type == "ML85":
+                            if ser.in_waiting > 0:
+                                line = ser.readline().decode('utf-8').rstrip()
+                                if len(line) > 33:
+                                    jLine = json.loads(line)
+                                    data= element.read(jLine)
+                    except Exception as e:
+                        raise e
+                    if data:
+                        if (data['measurements'] != {'temperature': None, 'humidity': None} and data['measurements'] != {'grHumidity': None} and data['measurements'] != {'uvIntensity': None}):
+                            newMongo.insertDatosSensor(data)
+                            actualData = data;
         except KeyboardInterrupt:
             print("adios")
             sys.exit()
@@ -71,10 +87,11 @@ class Sensors:
         try:
             d=''
             for element in self.instancesList.getDataList():
-                data = element.returnData()
-                if (data['data'] != {'temperatude': None, 'humidity': None} and data['data'] != [{'grHumidity': None}] and data['data'] != [{'uvIntensity': 0}]):
-                    d=data['data']
-            return d
+                if element.type == "DHT-11":
+                    data = element.returnData()
+                    if (data['measurements'] != {'temperature': None, 'humidity': None} and data['measurements'] != {'grHumidity': None} and data['measurements'] != {'uvIntensity': 0}):
+                        d=data['measurements']
+                        return d
         except:
             raise
     

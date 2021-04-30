@@ -3,9 +3,9 @@ import time
 import websocket
 import threading
 import RPi.GPIO as GPIO
-
 GPIO.setmode(GPIO.BCM)
 from DHT import DHT
+from SerialADC import SerialADC
 from Sensors import Sensors
 from File import File
 from MySQL import *
@@ -19,6 +19,8 @@ newSQL.Conexion()
 newMongo.mongoConexion()
 pinRegar = 18
 pinLuz = 17
+GPIO.setup(pinRegar, GPIO.OUT)
+GPIO.setup(pinLuz, GPIO.OUT)
 sensors = Sensors()
 sensorList = sensors.getAllInstance()
 # sensors.readThread()
@@ -34,20 +36,19 @@ def on_message(ws, message):
         result = value['data']
         inst = sensors.getAllInstance()
         for element in inst:
-            flowerID = newSQL.getFlowerpot(element.id)
-            dt = json.loads(result)
-        if dt['plantID'] == flowerID[0]:
-            if dt['order'] == "regar":
+            flowerID = newSQL.getFlowerpot(element.id)            
+        if result['plantID'] == flowerID[0]:
+            if result['order'] == "regar":
                 GPIO.output(pinRegar, GPIO.HIGH)
-                print(GPIO.input(pinRegar))
                 time.sleep(5)
                 GPIO.output(pinRegar, GPIO.LOW)
-                print('end')
-            if dt['order'] == "iluminar":
-                if GPIO.input(pinLuz) == 0:
+                data = {"t": 7, "d": {"topic": "measures", "event": "message", "data":{"notification":"regado"}}}
+                ws.send(json.dumps(data))
+            if result['order'] == "iluminar":
                     GPIO.output(pinLuz, GPIO.HIGH)
-                elif GPIO.input(pinLuz) == 1:
                     GPIO.output(pinLuz, GPIO.LOW)
+                    data = {"t": 7, "d": {"topic": "measures", "event": "message", "data":{"notification":"iluminado"}}}
+                    ws.send(json.dumps(data))
 
 
 def on_error(ws, error):
@@ -65,28 +66,17 @@ def on_open(ws):
         subscribe = {"t": 1, "d": {"topic": "measures"}}
         ws.send(json.dumps(subscribe))
         sensors.readThread()
-        ser = serial.Serial('/dev/ttyACM0', 115200, timeout=1)
-        ser.flush()
+        last = {}
         while True:
-            if ser.in_waiting > 0:
-                line = ser.readline().decode('utf-8').rstrip()
-                print(line)
-                try:
-                    jLine = json.loads(line)
-                    hl = sensors.getOneInstance("HL-69")
-                    ml = sensors.getOneInstance("ML85")
-                    if len(line) > 33:
-                        if hl is not None:
-                            hl.read(jline)
-                        if ml is not None:
-                            ml.read(jline)
-                except:
-                    print('fallo')
-
-            d = sensors.returnDataOnce()
-            data = {"t": 7, "d": {"topic": "measures", "event": "message", "data":d }}
+            lecturas = sensors.returnDataOnce()
+            if (lecturas != last and lecturas != None):
+                last = lecturas
+                print(lecturas)
+                data = {"t": 7, "d": {"topic": "measures", "event": "message", "data": lecturas}}
+                ws.send(json.dumps(data))
+            data = {"t": 7, "d": {"topic": "measures", "event": "message", "data":"ping-pong" }}
             ws.send(json.dumps(data))
-#             time.sleep(3)
+            time.sleep(4)
 
     threading.Thread(target=run).start()
 

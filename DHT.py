@@ -4,6 +4,7 @@ import Adafruit_DHT
 import time
 from datetime import datetime
 import RPi.GPIO as GPIO
+from datetime import datetime
 
 GPIO.setmode(GPIO.BCM)
 newSQL = MySQL()
@@ -30,7 +31,8 @@ class DHT:
             time.sleep(1)
 
     def returnData(self):
-        data = {'name': self.idName, 'data': {"temperature": self.temperature, "humidity": self.humidity},
-                'type': self.type}
+        now = datetime.now()
+#         timestamp = now.strftime("%Y-%m-%d %H:%M:%S")
+        data = {"IDSensor":self.id, "measurements": {"temperature": self.temperature, "humidity": self.humidity}, "created_at": now}
         return data
 
